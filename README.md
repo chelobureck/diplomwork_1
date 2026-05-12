@@ -3,32 +3,36 @@
 Мини-проект для дипломной работы по анализу туристического спроса на территории Чуйской области.
 
 ## Технологии
-- **FastAPI**: Основной фреймворк.
+- **Django & DRF**: Основной фреймворк для разработки API.
 - **PostgreSQL**: База данных для хранения данных о туризме.
-- **SQLAlchemy**: ORM для работы с БД.
-- **Redis & FastAPI-Cache2**: Кеширование ответов API.
+- **Django ORM**: ORM для работы с БД.
+- **Redis**: Кеширование через `django-redis`.
 - **Docker & Docker Compose**: Контейнеризация и развертывание.
-- **Pydantic Settings**: Управление конфигурацией через `.env`.
+- **Swagger (drf-spectacular)**: Автоматическая документация API.
 
 ## Как запустить
-
 1. Убедитесь, что у вас установлен Docker и Docker Compose.
-2. Соберите и запустите контейнеры:
+2. Создайте файл `.env` на основе `.env.example`.
+3. Соберите и запустите контейнеры:
    ```bash
    docker-compose up --build
    ```
-3. API будет доступно по адресу: `http://localhost:8000`
-4. Документация Swagger: `http://localhost:8000/docs`
+4. Примените миграции:
+   ```bash
+   docker-compose exec web python manage.py migrate
+   ```
+5. API будет доступно по адресу: `http://localhost:8000/api/`
+6. Документация Swagger: `http://localhost:8000/api/docs/`
 
 ## Особенности безопасности
-- **CORS**: Настроен в `app/main.py` через `BACKEND_CORS_ORIGINS`.
-- **Environment Variables**: Все чувствительные данные (пароли, ключи) хранятся в `.env`.
-- **Validation**: Строгая типизация и валидация входящих данных через Pydantic.
+- **JWT Authentication**: Защита эндпоинтов через SimpleJWT.
+- **CORS**: Настроен через `django-cors-headers`.
+- **Environment Variables**: Все чувствительные данные хранятся в `.env`.
 
 ## Структура проекта
-- `app/api`: Эндпоинты API.
-- `app/core`: Конфигурация и безопасность.
-- `app/db`: Подключение к БД и базовые классы.
-- `app/models`: Модели SQLAlchemy.
-- `app/schemas`: Схемы Pydantic.
-- `app/cache`: Логика кеширования (настроено в `main.py`).
+- `core/`: Настройки проекта Django.
+- `tourism/`: Основное приложение с логикой туризма.
+  - `models.py`: Модели данных (Места, Отзывы, Фото).
+  - `serializers.py`: Преобразование данных в JSON.
+  - `views.py`: Обработка запросов и бизнес-логика.
+- `static/` & `media/`: Статические файлы и загруженные изображения.

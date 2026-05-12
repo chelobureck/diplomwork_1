@@ -27,11 +27,20 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-password}
       - DB_HOST=db
       - DB_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - SECRET_KEY=${SECRET_KEY:-django-insecure-key}
       - DEBUG=1
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
 
   nginx:
     image: nginx:latest
