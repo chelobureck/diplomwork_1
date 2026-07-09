@@ -8,7 +8,8 @@ from .models import Place, Review, Photo
 from .serializers import PlaceSerializer, ReviewSerializer, PhotoSerializer, UserSerializer
 
 class UserRegistrationView(generics.CreateAPIView):
-    queryset = User.objects.all()
+    # Avoid evaluating a queryset at import time (can trigger DB access during migrations)
+    queryset = User.objects.none()
     serializer_class = UserSerializer
     permission_classes = (permissions.AllowAny,)
 
